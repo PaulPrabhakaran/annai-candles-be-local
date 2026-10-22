@@ -1,0 +1,2 @@
+S3_PRODUCT_FOLDER_NAME = "product"
+S3_USER_FOLDER_NAME = "user"
