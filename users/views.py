@@ -238,7 +238,8 @@ class GetIndividualMember(APIView):
     def get(self, request, user_id):
         data = None
         try:
-            data = UserDetailSerializer(User.objects.get(id=user_id)).data
+            obj = get_object_or_404(User, pk=user_id)
+            data = UserDetailSerializer(obj).data
         except Exception as e:
             logger.exception(f"Get Individual Member Data - {e}")
             data = None

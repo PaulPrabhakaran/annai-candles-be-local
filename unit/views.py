@@ -28,6 +28,9 @@ from annai_candles_be.helpers import ensure_admin
 from unit.models import Unit
 from unit.serializers import UnitSerializer
 
+
+from products.models import ProductUnitPrice
+
 logger = logging.getLogger('annai_candles_be')
 
 
@@ -143,7 +146,6 @@ class ActivateOrDeactivateUnit(APIView):
             obj.status = status
             obj.updated_by = request.user
             obj.save()
-            
             return Response({'message' : f'Unit {status_text} Successfully'})           
             
         

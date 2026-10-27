@@ -114,7 +114,7 @@ class ProductPriceForCustomer(models.Model):
         on_delete=models.CASCADE,
         related_name="special_prices",
     )
-    product_unit = models.ForeignKey(
+    unit_price = models.ForeignKey(
         "ProductUnitPrice",
         on_delete=models.CASCADE,
         related_name="customer_prices",
@@ -144,7 +144,7 @@ class ProductPriceForCustomer(models.Model):
         verbose_name_plural = "Product Price For Customers"
         constraints = [
             models.UniqueConstraint(
-                fields=["customer", "product_unit"],
+                fields=["customer", "unit_price"],
                 name="unique_customer_price",
             )
         ]
