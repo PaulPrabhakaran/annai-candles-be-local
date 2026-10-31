@@ -5,6 +5,8 @@ import math
 import secrets
 from datetime import timedelta
 
+from django.utils.timezone import now
+
 
 from django.http import Http404
 from django.db.models import Q
@@ -22,7 +24,7 @@ from annai_candles_be.common import custom_error_message, permission_denied_mess
 from annai_candles_be.response import api_error_response, api_response, frontend_error_response
 from annai_candles_be.helpers import ensure_admin
 
-from products.models import Product, ProductPriceForCustomer
+from products.models import Product, ProductPriceForCustomer, ProductPriceForCustomerHistory
 from products.serializers import (ProductSerializer, ProductListSerializer,
                         AssignCustomerPricesSerializer, CustomerPriceItemSerializer,
                         ProductUnitPriceDetailSerializer, ProductPriceForCustomerResponseSerializer)
@@ -209,9 +211,22 @@ class AssignProductPriceForCustomerAPIView(APIView):
                 existing_obj = existing_map.get(unit_price.id)
 
                 if existing_obj:
-                    existing_obj.price = price
-                    existing_obj.updated_by = request.user
-                    to_update.append(existing_obj)
+                    if existing_obj.price != price:
+                        
+                        ProductPriceForCustomerHistory.objects.create(
+                            customer=existing_obj.customer,
+                            unit_price=existing_obj.unit_price,
+                            old_price = existing_obj.price,
+                            current_price = price,
+                            created_at=now(),
+                            efficient_from=now(),
+                            created_by = request.user
+                        )
+                        
+                        
+                        existing_obj.price = price
+                        existing_obj.updated_by = request.user
+                        to_update.append(existing_obj)
                 else:
                     to_create.append(
                         ProductPriceForCustomer(

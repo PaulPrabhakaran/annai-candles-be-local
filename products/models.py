@@ -149,3 +149,29 @@ class ProductPriceForCustomer(models.Model):
             )
         ]
       
+
+
+
+
+class ProductPriceForCustomerHistory(models.Model):
+    customer = models.ForeignKey(
+        "customer.Customer",
+        on_delete=models.CASCADE,
+        related_name="special_prices_history",
+    )
+    unit_price = models.ForeignKey(
+        "ProductUnitPrice",
+        on_delete=models.CASCADE,
+        related_name="customer_prices_history",
+    )
+    old_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    current_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    efficient_from = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        related_name="created_product_price_for_customer_history",
+        null=True,
+        blank=True,
+    )
